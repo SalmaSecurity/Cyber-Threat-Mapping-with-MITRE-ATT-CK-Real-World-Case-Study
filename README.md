@@ -65,7 +65,12 @@ MITRE ATT&CK tracks clusters of activity associated with specific **threat actor
 
 5. Proactively seek indicators of compromise (IOCs) associated with specific techniques.
 
-## How to map to ATT&CK from Narrative Reports
+## How to Map to ATT&CK from Narrative Reports?
+
+The first part of this project focuses on mapping cyber threat activity to the MITRE ATT&CK framework using narrative reports. For this purpose, we have selected a real-world case study, the **"STATIC KITTEN Adversary"**, taken from the **CrowdStrike 2024 Threat Hunting Report** (pages 31-35). You can access the report [here](https://www.crowdstrike.com/resources/reports/threat-hunting-report/).
+
+In the following sections, we will analyze this case in detail and map the observed adversary tactics, techniques, and procedures (TTPs) to the relevant ATT&CK framework categories, following the four steps mentioned previously.
+
 
 
 
