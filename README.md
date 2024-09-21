@@ -49,6 +49,29 @@ MITRE ATT&CK tracks clusters of activity associated with specific **threat actor
 
 6. **Assessment and Improvement**: Organizations can use ATT&CK to assess their security posture, identify gaps in defenses, and prioritize improvements based on real-world threat intelligence.
 
+## What is Mapping and Why is It Important?
+
+**Mapping** in the context of the MITRE ATT&CK framework involves correlating observed adversary behaviors—whether from narrative reports or security logs—to specific tactics and techniques within the framework. This process helps organizations understand how actual attacks align with known adversary behaviors.
+
+### Importance of Mapping
+
+1. Povides a clear view of how threats manifest in the real world, allowing organizations to better prepare for similar attacks.
+
+2. Identify areas where defenses may be lacking and prioritize improvements accordingly.
+
+3. Understanding the tactics and techniques relevant to their environment enables organizations to make informed decisions about security tools and technologies to invest in.
+
+4. Mapping historical incidents helps security teams refine their incident response plans, ensuring they are better prepared for future attacks that employ similar techniques.
+
+5. Proactively seek indicators of compromise (IOCs) associated with specific techniques.
+
+## How to map to ATT&CK from Narrative Reports
+
+
+
+
+
+
 
 
 
