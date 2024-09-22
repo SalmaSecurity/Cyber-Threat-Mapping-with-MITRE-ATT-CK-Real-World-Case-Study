@@ -71,6 +71,125 @@ The first part of this project focuses on mapping cyber threat activity to the M
 
 In the following sections, we will analyze this case in detail and map the observed adversary tactics, techniques, and procedures (TTPs) to the relevant ATT&CK framework categories, following the four steps mentioned previously.
 
+**Step 1: Let's Find the Behavior**
+
+In this step, the objective is to **closely** analyze the narrative report and extract key details about the adversary's actions during the cyber intrusion. 
+
+The first thing to do is looking for **key events** in the report that describe the adversary's actions throughout the attack, with a focus on the verbs and actions described in the narrative. These verbs will help identify what the adversary did, which can then be mapped to specific tactics or techniques in the MITRE ATT&CK framework. 
+
+All this could be broken down into three phases:
+
+**- Pre-compromise:** What preparation or reconnaissance activities did the adversary perform before the initial compromise?
+
+In this phase, the adversary often conducts reconnaissance or preparation activities before the actual compromise.
+
+The adversary in this case is the STATIC KITTEN group. After searching ATT&CK's group section without results, additional research on STATIC KITTEN reveals:
+-Active since at least early 2017.
+-Primarily targets regions like the Middle East, Eurasia, and Central Asia.
+-Known for PowerShell-based malware families, such as NTSTATS and CloudSTATS.
+-Their main method of delivery involves spear-phishing emails with malicious Microsoft Word documents as attachments.
+
+This indicates that STATIC KITTEN likely performed reconnaissance by gathering professional email information and other details about the targets to craft spear-phishing emails.
+The report also highlights that the adversary downloaded suspicious ZIP files from a cloud storage platform to two hosts, which could suggest preparatory efforts to deliver their malicious payload.
+
+**- Initial compromise:** How did the adversary gain access to the victim's system or network? 
+
+This phase covers how the adversary **gained access** to the victim's system or network.
+
+According to the report, STATIC KITTEN used **phishing activity** to deliver tools like ScreenConnect and Atera to government, telecom, and technology entities in the Middle East and South Asia.
+
+In one instance, they used the Atera RMM tool during a spear-phishing campaign against a healthcare entity in the Middle East.
+The adversary’s primary method of initial access seems to involve spear-phishing emails that deliver malicious ZIP files from cloud storage providers.
+
+**- Post-compromise:** What did the adversary do after gaining access?
+
+After gaining access, the adversary continues their operations by waiting for the victim to upload and execute malicious files.
+
+In this case, the malicious file is an MSI installer for Atera Agent remote management software. Executing the ZIP file results in the installation of the Atera MSI, which gives the adversary persistent access.
+
+The report mentions that at least six additional hosts attempted to retrieve the same ZIP file, suggesting a broad spear-phishing campaign targeting multiple users.
+
+To maintain persistence, STATIC KITTEN relies on legitimate RMM tools like Atera, delivered via MSI files, making detection more challenging for defenders.
+They also often rename installer files to evade detection.
+
+STATIC KITTEN is known to reuse techniques across campaigns, although they may update or rewrite their tooling. While they may use a different RMM tool, their method of delivering it through cloud storage providers often remains the same.
+
+**Step 2: Research the Behavior**
+
+In this step, we need to gather **deeper insights** into the specific behaviors mentioned in the report about STATIC KITTEN and their use of remote management tools (RMM) and spear-phishing campaigns. This will help us understand the technical details and context, aiding in a more precise mapping to MITRE ATT&CK.
+
+**1. Adversary Tools and Techniques**
+
+[Atera](https://www.atera.com/fr/) and [ScreenConnect](https://screenconnect.connectwise.com/) are legitimate remote management tools often abused by adversaries for persistence or lateral movement. We need to examine how these tools are used for malicious purposes:
+
+- Atera RMM is designed for remote monitoring and management but can be exploited by adversaries to maintain persistence in compromised systems.
+- ScreenConnect is a remote desktop tool that, if used maliciously, enables adversaries to control a victim’s machine remotely.
+  
+Both tools allow adversaries to hide in plain sight since these are legitimate software often found in IT environments.
+
+**2. Spear-Phishing**
+
+The report highlights the use of spear-phishing emails to deliver ZIP files containing malicious payloads. We should research known spear-phishing techniques:
+
+- How adversaries craft phishing emails to evade detection (e.g., spoofing trusted entities or leveraging social engineering).
+- The use of MSI installers to deliver malware, which can be tricky to detect because MSI files are standard Windows files used to install legitimate software.
+  
+**3. Network Protocols and Infrastructure**
+
+Msiexec.exe, a standard Windows process used to execute MSI installers, is leveraged in this campaign. We should research:
+
+- How msiexec.exe is used in attacks (e.g., running an installer via command line).
+- HTTP/HTTPS usage for downloading the malicious ZIP file from cloud storage, which might evade detection due to its common use in corporate environments.
+  
+**Step 3: Translate the Behavior into a Tactic**
+
+To properly map the behavior of the adversary from the STATIC KITTEN report to the appropriate MITRE ATT&CK tactics, we need to understand their overall goals at each phase of the attack. Here's the breakdown:
+
+- Pre-compromise Phase
+**Reconnaissance:**
+The adversary is gathering information on the target, such as email addresses and professional information, which they can use for future spear-phishing campaigns.
+Behavior: Collecting email addresses and organizational information from the target.
+MITRE ATT&CK Tactic: Reconnaissance (TA0043)
+
+**Resource Development:**
+The adversary is preparing for the attack by setting up the necessary infrastructure, such as crafting malicious spear-phishing emails and downloading ZIP files with malicious payloads.
+Behavior: Downloading ZIP files and crafting spear-phishing emails for delivery.
+MITRE ATT&CK Tactic: Resource Development (TA0042)
+
+- Initial Compromise Phase
+**Initial Access:**
+The adversary gains entry into the target network by sending spear-phishing emails with malicious attachments. In this case, the delivery method includes ZIP files containing MSI installers, which are opened by the victim.
+Behavior: Spear-phishing emails used to deliver malicious payloads (e.g., ZIP files, MSI installers).
+MITRE ATT&CK Tactic: Initial Access (TA0001)
+
+- Post-compromise Phase
+**Execution:**
+After the initial compromise, the adversary runs the malicious code by executing the MSI files, which install RMM tools (Atera or ScreenConnect) on the victim’s system.
+Behavior: Execution of MSI installers to deploy Atera or ScreenConnect RMM tools.
+MITRE ATT&CK Tactic: Execution (TA0002)
+
+**Persistence:**
+The adversary establishes persistence in the network by using legitimate RMM tools that allow them to maintain access over time. They use Atera RMM and ScreenConnect, which enable remote control of the victim's machine.
+Behavior: Using legitimate RMM tools (Atera, ScreenConnect) to maintain access.
+MITRE ATT&CK Tactic: Persistence (TA0003)
+
+**Defense Evasion:**
+The adversary evades detection by using legitimate tools (like MSI installers and RMM tools) to blend in with legitimate traffic. They rename the installer files and use standard Windows processes (msiexec.exe) to avoid raising suspicions.
+Behavior: Using legitimate RMM tools and renaming installer files to avoid detection.
+MITRE ATT&CK Tactic: Defense Evasion (TA0005)
+
+**Lateral Movement:**
+The adversary moves within the network, potentially using the same RMM tools to access multiple systems after the initial compromise. There are indications that multiple hosts were targeted, suggesting lateral movement.
+Behavior: Using RMM tools to move laterally within the victim’s network.
+MITRE ATT&CK Tactic: Lateral Movement (TA0008)
+
+**Command and Control:**
+The adversary maintains control over the compromised systems using RMM tools. These tools allow the adversary to issue commands remotely, effectively controlling the victim’s machine.
+Behavior: Using RMM tools for remote control and maintaining communication with compromised systems.
+MITRE ATT&CK Tactic: Command and Control (TA0011)
+
+
+
 
 
 
