@@ -17,8 +17,16 @@ MITRE ATT&CK is a comprehensive framework developed by the non-profit organizati
 **ATT&CK** offers three different matrices: **Enterprise**, **Mobile**, and **ICS (Industrial Control Systems)**. These matrices display adversary tactics and techniques in a structured manner.
 
 - **ATT&CK Enterprise**: This matrix covers tactics and techniques for platforms such as Windows, macOS, Linux, PRE, Azure AD, Office 365, Google Workspace, SaaS, IaaS, Networks, and Containers.
+
+![Enterprise Matrice](Images/Enterprisematrice.PNG)
+  
 - **ATT&CK ICS**: Focuses on Industrial Control Systems, often used in critical infrastructure environments.
+
+![Enterprise Matrice](Images/ICSMatrice.PNG)
+
 - **ATT&CK Mobile**: This matrix covers adversarial techniques involving device access and network-based effects for platforms such as Android and iOS.
+
+![Enterprise Matrice](Images/mobilematrice.PNG)
 
 #### What are Tactics and Techniques?
 
@@ -35,15 +43,23 @@ MITRE ATT&CK is a comprehensive framework developed by the non-profit organizati
 MITRE ATT&CK tracks clusters of activity associated with specific **threat actors** known as "groups." For example:
 - **ANDARIAL**: A known adversary group whose tactics and techniques are mapped and can be viewed on ATT&CK.
 
+![Enterprise Matrice](Images/Groups.PNG)
+
 ## What is the Importance of Knowing and Using MITRE ATT&CK?
 
 1. **Enhanced Threat Intelligence**: ATT&CK provides a comprehensive repository of adversary tactics and techniques, enabling organizations to better understand the methods employed by threat actors.
 
+![Enterprise Matrice](Images/purpose1.png)
+
 2. **Improved Detection and Response**: By mapping known techniques to their detection capabilities, security teams can enhance their monitoring and incident response strategies, leading to quicker and more effective mitigations.
+
+![Enterprise Matrice](Images/purpose2.png)
 
 3. **Proactive Defense Strategies**: Knowledge of ATT&CK allows organizations to anticipate potential threats and implement measures to defend against specific tactics that adversaries may employ.
 
 4. **Standardized Language**: ATT&CK offers a common language for discussing adversary behavior, facilitating communication between security teams, threat analysts, and stakeholders.
+
+![Enterprise Matrice](Images/porpuse4.png)
 
 5. **Training and Awareness**: The framework serves as a valuable resource for training security personnel, helping them to recognize and respond to tactics used in real-world attacks.
 
@@ -65,6 +81,10 @@ MITRE ATT&CK tracks clusters of activity associated with specific **threat actor
 
 5. Proactively seek indicators of compromise (IOCs) associated with specific techniques.
 
+Steps:
+
+![Enterprise Matrice](Images/steps.png)
+
 ## How to Map to ATT&CK from Narrative Reports?
 
 The first part of this project focuses on mapping cyber threat activity to the MITRE ATT&CK framework using narrative reports. For this purpose, we have selected a real-world case study, the **"STATIC KITTEN Adversary"**, taken from the **CrowdStrike 2024 Threat Hunting Report** (pages 31-35). You can access the report [here](https://www.crowdstrike.com/resources/reports/threat-hunting-report/).
@@ -83,6 +103,8 @@ All this could be broken down into three phases:
 
 In this phase, the adversary often conducts reconnaissance or preparation activities before the actual compromise.
 
+![Enterprise Matrice](Images/Step1precomp.PNG)
+
 The adversary in this case is the STATIC KITTEN group. After searching ATT&CK's group section without results, additional research on STATIC KITTEN reveals:
 -Active since at least early 2017.
 -Primarily targets regions like the Middle East, Eurasia, and Central Asia.
@@ -90,6 +112,9 @@ The adversary in this case is the STATIC KITTEN group. After searching ATT&CK's 
 -Their main method of delivery involves spear-phishing emails with malicious Microsoft Word documents as attachments.
 
 This indicates that STATIC KITTEN likely performed reconnaissance by gathering professional email information and other details about the targets to craft spear-phishing emails.
+
+![Enterprise Matrice](Images/Step1precomp2.PNG)
+
 The report also highlights that the adversary downloaded suspicious ZIP files from a cloud storage platform to two hosts, which could suggest preparatory efforts to deliver their malicious payload.
 
 **- Initial compromise:** How did the adversary gain access to the victim's system or network? 
@@ -98,8 +123,12 @@ This phase covers how the adversary **gained access** to the victim's system or 
 
 According to the report, STATIC KITTEN used **phishing activity** to deliver tools like ScreenConnect and Atera to government, telecom, and technology entities in the Middle East and South Asia.
 
+![Enterprise Matrice](Images/Step1initialcomp.PNG)
+
 In one instance, they used the Atera RMM tool during a spear-phishing campaign against a healthcare entity in the Middle East.
 The adversary’s primary method of initial access seems to involve spear-phishing emails that deliver malicious ZIP files from cloud storage providers.
+
+![Enterprise Matrice](Images/Step1initialcomp2.PNG)
 
 **- Post-compromise:** What did the adversary do after gaining access?
 
@@ -107,12 +136,20 @@ After gaining access, the adversary continues their operations by waiting for th
 
 In this case, the malicious file is an MSI installer for Atera Agent remote management software. Executing the ZIP file results in the installation of the Atera MSI, which gives the adversary persistent access.
 
+![Enterprise Matrice](Images/Step1postcomp.PNG)
+
 The report mentions that at least six additional hosts attempted to retrieve the same ZIP file, suggesting a broad spear-phishing campaign targeting multiple users.
+
+![Enterprise Matrice](Images/Step1postcomp2.PNG)
 
 To maintain persistence, STATIC KITTEN relies on legitimate RMM tools like Atera, delivered via MSI files, making detection more challenging for defenders.
 They also often rename installer files to evade detection.
 
+![Enterprise Matrice](Images/Step1postcomp3.PNG)
+
 STATIC KITTEN is known to reuse techniques across campaigns, although they may update or rewrite their tooling. While they may use a different RMM tool, their method of delivering it through cloud storage providers often remains the same.
+
+![Enterprise Matrice](Images/Step1postcomp4.PNG)
 
 **Step 2: Research the Behavior**
 
@@ -150,6 +187,8 @@ To properly map the behavior of the adversary from the STATIC KITTEN report to t
   
 The adversary is gathering information on the target, such as email addresses and professional information, which they can use for future spear-phishing campaigns.
 
+![Enterprise Matrice](Images/step31.PNG)
+
 Behavior: Collecting email addresses and organizational information from the target.
 
 MITRE ATT&CK Tactic: Reconnaissance (TA0043)
@@ -162,6 +201,8 @@ Behavior: Downloading ZIP files and crafting spear-phishing emails for delivery.
 
 MITRE ATT&CK Tactic: Resource Development (TA0042)
 
+![Enterprise Matrice](Images/step32.PNG)
+
 - Initial Compromise Phase
 **Initial Access:**
   
@@ -171,10 +212,14 @@ Behavior: Spear-phishing emails used to deliver malicious payloads (e.g., ZIP fi
 
 MITRE ATT&CK Tactic: Initial Access (TA0001)
 
+![Enterprise Matrice](Images/step33.PNG)
+
 - Post-compromise Phase
 **Execution:**
   
 After the initial compromise, the adversary runs the malicious code by executing the MSI files, which install RMM tools (Atera or ScreenConnect) on the victim’s system.
+
+![Enterprise Matrice](Images/step34.PNG)
 
 Behavior: Execution of MSI installers to deploy Atera or ScreenConnect RMM tools.
 
@@ -184,6 +229,8 @@ MITRE ATT&CK Tactic: Execution (TA0002)
 
 The adversary establishes persistence in the network by using legitimate RMM tools that allow them to maintain access over time. They use Atera RMM and ScreenConnect, which enable remote control of the victim's machine.
 
+![Enterprise Matrice](Images/step35.PNG)
+
 Behavior: Using legitimate RMM tools (Atera, ScreenConnect) to maintain access.
 
 MITRE ATT&CK Tactic: Persistence (TA0003)
@@ -192,6 +239,10 @@ MITRE ATT&CK Tactic: Persistence (TA0003)
 
 The adversary evades detection by using legitimate tools (like MSI installers and RMM tools) to blend in with legitimate traffic. They rename the installer files and use standard Windows processes (msiexec.exe) to avoid raising suspicions.
 
+![Enterprise Matrice](Images/step36.PNG)
+
+![Enterprise Matrice](Images/step37.PNG)
+
 Behavior: Using legitimate RMM tools and renaming installer files to avoid detection.
 
 MITRE ATT&CK Tactic: Defense Evasion (TA0005)
@@ -199,6 +250,8 @@ MITRE ATT&CK Tactic: Defense Evasion (TA0005)
 **Lateral Movement:**
 
 The adversary moves within the network, potentially using the same RMM tools to access multiple systems after the initial compromise. There are indications that multiple hosts were targeted, suggesting lateral movement.
+
+![Enterprise Matrice](Images/step38.PNG)
 
 Behavior: Using RMM tools to move laterally within the victim’s network.
 
