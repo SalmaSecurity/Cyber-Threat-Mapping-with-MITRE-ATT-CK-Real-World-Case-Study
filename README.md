@@ -147,46 +147,255 @@ To properly map the behavior of the adversary from the STATIC KITTEN report to t
 
 - Pre-compromise Phase
 **Reconnaissance:**
+  
 The adversary is gathering information on the target, such as email addresses and professional information, which they can use for future spear-phishing campaigns.
+
 Behavior: Collecting email addresses and organizational information from the target.
+
 MITRE ATT&CK Tactic: Reconnaissance (TA0043)
 
 **Resource Development:**
+
 The adversary is preparing for the attack by setting up the necessary infrastructure, such as crafting malicious spear-phishing emails and downloading ZIP files with malicious payloads.
+
 Behavior: Downloading ZIP files and crafting spear-phishing emails for delivery.
+
 MITRE ATT&CK Tactic: Resource Development (TA0042)
 
 - Initial Compromise Phase
 **Initial Access:**
+  
 The adversary gains entry into the target network by sending spear-phishing emails with malicious attachments. In this case, the delivery method includes ZIP files containing MSI installers, which are opened by the victim.
+
 Behavior: Spear-phishing emails used to deliver malicious payloads (e.g., ZIP files, MSI installers).
+
 MITRE ATT&CK Tactic: Initial Access (TA0001)
 
 - Post-compromise Phase
 **Execution:**
+  
 After the initial compromise, the adversary runs the malicious code by executing the MSI files, which install RMM tools (Atera or ScreenConnect) on the victim’s system.
+
 Behavior: Execution of MSI installers to deploy Atera or ScreenConnect RMM tools.
+
 MITRE ATT&CK Tactic: Execution (TA0002)
 
 **Persistence:**
+
 The adversary establishes persistence in the network by using legitimate RMM tools that allow them to maintain access over time. They use Atera RMM and ScreenConnect, which enable remote control of the victim's machine.
+
 Behavior: Using legitimate RMM tools (Atera, ScreenConnect) to maintain access.
+
 MITRE ATT&CK Tactic: Persistence (TA0003)
 
 **Defense Evasion:**
+
 The adversary evades detection by using legitimate tools (like MSI installers and RMM tools) to blend in with legitimate traffic. They rename the installer files and use standard Windows processes (msiexec.exe) to avoid raising suspicions.
+
 Behavior: Using legitimate RMM tools and renaming installer files to avoid detection.
+
 MITRE ATT&CK Tactic: Defense Evasion (TA0005)
 
 **Lateral Movement:**
+
 The adversary moves within the network, potentially using the same RMM tools to access multiple systems after the initial compromise. There are indications that multiple hosts were targeted, suggesting lateral movement.
+
 Behavior: Using RMM tools to move laterally within the victim’s network.
+
 MITRE ATT&CK Tactic: Lateral Movement (TA0008)
 
 **Command and Control:**
+
 The adversary maintains control over the compromised systems using RMM tools. These tools allow the adversary to issue commands remotely, effectively controlling the victim’s machine.
+
 Behavior: Using RMM tools for remote control and maintaining communication with compromised systems.
+
 MITRE ATT&CK Tactic: Command and Control (TA0011)
+
+**Step 4: Identify What Technique & Sub-Technique Applies**
+
+## Overview of Step 4
+
+In this step, the goal is to identify the relevant **MITRE ATT&CK techniques** and **sub-techniques** associated with the observed adversarial behavior. This can be challenging because:
+
+- Techniques are not always obvious and may serve multiple tactics (e.g., Persistence, Privilege Escalation, Defense Evasion).
+- Not every action or behavior can be mapped to a technique, and context is key to determining whether an activity is malicious.
+- The level of detail in a report might influence whether you identify the technique or sub-technique first.
+
+### How We Identify Techniques/Sub-Techniques:
+- **Search through the ATT&CK framework** using keywords, procedures, or command strings.
+- **Review the tactics** (identified in the earlier step) and assess the corresponding techniques and sub-techniques.
+- **Contextualize the behavior** based on the adversary's tactics and actions.
+
+Below is a breakdown of techniques and sub-techniques for each tactic identified in the adversary's behavior. 
+
+---
+
+## Reconnaissance
+
+### Technique: [Gather Victim Org Information (T1591)](https://attack.mitre.org/techniques/T1591/)
+- **Sub-technique**: [Identify Roles (T1591.002)](https://attack.mitre.org/techniques/T1591/002/)
+  
+  **How it was identified**:  
+  Adversaries need to gather information about the victim organization to target phishing emails effectively. In this case, the adversary is likely collecting details about specific personnel and their roles to identify high-value targets.
+
+  **Explanation**:  
+  This technique is used when an attacker gathers detailed information about the victim organization, such as employees' roles or decision-making power. This allows them to direct more personalized phishing attacks.
+
+  **Justification**:  
+  The phishing behavior described implies that the adversary must first gather information about the organization's structure, specifically identifying key personnel like IT administrators.
+
+---
+
+## Resource Development
+
+### Technique: [Obtain Capabilities (T1587)](https://attack.mitre.org/techniques/T1587/)
+- **Sub-technique**: [Obtain Tool (T1587.001)](https://attack.mitre.org/techniques/T1587/001/)
+  
+  **How it was identified**:  
+  The adversary is seen downloading files from cloud storage, suggesting they are obtaining the necessary malware or tools for the attack.
+
+  **Explanation**:  
+  Attackers frequently acquire tools from external sources, such as cloud storage or third-party repositories, to prepare for an attack. This might include malware, exploit kits, or other necessary software.
+
+  **Justification**:  
+  The report mentions file downloads, indicating the attacker is preparing for the attack by obtaining malicious software, falling under **Obtain Capabilities**.
+
+---
+
+## Initial Access
+
+### Technique: [Phishing (T1566)](https://attack.mitre.org/techniques/T1566/)
+- **Sub-technique**: [Spearphishing Attachment (T1566.001)](https://attack.mitre.org/techniques/T1566/001/)
+  
+  **How it was identified**:  
+  The report explicitly mentions a phishing email with a malicious attachment, which suggests the **Spearphishing Attachment** sub-technique.
+
+  **Explanation**:  
+  This is a classic spear-phishing method where the attacker sends an email with a malicious file attached. When the victim opens the file, the malware is executed.
+
+  **Justification**:  
+  The report describes the phishing method, making this technique and sub-technique the most appropriate choice.
+
+---
+
+## Execution
+
+### Technique: [User Execution (T1204)](https://attack.mitre.org/techniques/T1204/)
+- **Sub-technique**: [Malicious File (T1204.002)](https://attack.mitre.org/techniques/T1204/002/)
+  
+  **How it was identified**:  
+  The adversary relies on the victim to open the phishing attachment, triggering the execution of a malicious file.
+
+  **Explanation**:  
+  Once the phishing attachment is opened, the malicious file is executed by the victim. This is a common technique where user interaction (clicking a link, opening a file) is needed to start the attack.
+
+  **Justification**:  
+  The adversary's success depends on user interaction with a **malicious file**, fitting this sub-technique.
+
+### Technique: [System Services (T1569)](https://attack.mitre.org/techniques/T1569/)
+- **Sub-technique**: [Service Execution (T1569.002)](https://attack.mitre.org/techniques/T1569/002/)
+  
+  **How it was identified**:  
+  The malicious file uses **msiexec.exe** to execute the payload, which is an example of **Service Execution**.
+
+  **Explanation**:  
+  **msiexec.exe** is a Windows utility used for installing MSI packages. The attacker uses this system service to run their malicious payload, allowing the code to execute as part of a trusted system process.
+
+  **Justification**:  
+  The use of **msiexec.exe** makes this a clear case of system service-based execution.
+
+---
+
+## Persistence
+
+### Technique: [Create or Modify System Process (T1543)](https://attack.mitre.org/techniques/T1543/)
+- **Sub-technique**: [Windows Service (T1543.003)](https://attack.mitre.org/techniques/T1543/003/)
+  
+  **How it was identified**:  
+  The adversary creates or modifies Windows services to ensure their malware remains persistent across system reboots or restarts.
+
+  **Explanation**:  
+  Modifying or creating a Windows service ensures the malware can restart after a reboot or remain active long-term without raising immediate suspicion.
+
+  **Justification**:  
+  By manipulating legitimate system processes, the adversary can maintain their access, which aligns with this technique.
+
+---
+
+## Defense Evasion
+
+### Technique: [Trusted Developer Utilities Proxy Execution (T1218)](https://attack.mitre.org/techniques/T1218/)
+- **Sub-technique**: [Msiexec (T1218.007)](https://attack.mitre.org/techniques/T1218/007/)
+  
+  **How it was identified**:  
+  The use of **msiexec.exe**, a trusted Windows utility, allows the attacker to evade detection by using legitimate software to run malicious payloads.
+
+  **Explanation**:  
+  Trusted system utilities like **msiexec.exe** are often allowed by security software, so using them to execute malicious code is a common evasion technique.
+
+  **Justification**:  
+  This technique allows the adversary to avoid detection by using a trusted, built-in Windows tool for malicious purposes.
+
+---
+
+## Lateral Movement
+
+### Technique: [Exploitation of Remote Services (T1210)](https://attack.mitre.org/techniques/T1210/)
+  
+  **How it was identified**:  
+  The adversary uses **Remote Management Tools (RMM)** like **Atera** and **ScreenConnect** to move laterally through the network, exploiting these legitimate services.
+
+  **Explanation**:  
+  By exploiting remote services, the attacker can move between different systems within the network. RMM tools are often used for lateral movement as they provide access to other systems remotely.
+
+  **Justification**:  
+  The use of legitimate remote management services for lateral movement matches this technique.
+
+---
+
+## Command and Control
+
+### Technique: [Remote Access Software (T1219)](https://attack.mitre.org/techniques/T1219/)
+  
+  **How it was identified**:  
+  The adversary maintains control over the compromised system using remote access tools like **Atera** and **ScreenConnect**.
+
+  **Explanation**:  
+  These remote access tools enable the attacker to issue commands, exfiltrate data, or perform other malicious actions from a remote location.
+
+  **Justification**:  
+  The tools mentioned in the report are designed for remote access, which makes this the appropriate command and control technique.
+
+---
+
+# Summary of Techniques and Sub-techniques
+
+1. **Reconnaissance**:  
+   - Gather Victim Org Information (T1591) → Identify Roles (T1591.002)
+
+2. **Resource Development**:  
+   - Obtain Capabilities (T1587) → Obtain Tool (T1587.001)
+
+3. **Initial Access**:  
+   - Phishing (T1566) → Spearphishing Attachment (T1566.001)
+
+4. **Execution**:  
+   - User Execution (T1204) → Malicious File (T1204.002)  
+   - System Services (T1569) → Service Execution (T1569.002)
+
+5. **Persistence**:  
+   - Create or Modify System Process (T1543) → Windows Service (T1543.003)
+
+6. **Defense Evasion**:  
+   - Trusted Developer Utilities Proxy Execution (T1218) → Msiexec (T1218.007)
+
+7. **Lateral Movement**:  
+   - Exploitation of Remote Services (T1210)
+
+8. **Command and Control**:  
+   - Remote Access Software (T1219)
+
 
 
 
